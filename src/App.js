@@ -268,6 +268,8 @@ const DISH_TAGS = {
   mushroomPancakes: { label: "Duck", color: "#6B4E3D" },
   toppings: { label: "Serve", color: "#2E8B57" },
 };
+
+function formatTime(totalSeconds) {
   const m = Math.floor(totalSeconds / 60);
   const s = totalSeconds % 60;
   return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
@@ -280,7 +282,7 @@ function Timer({ label, minutes }) {
   const intervalRef = useRef(null);
 
   useEffect(() => {
-    if (isRunning && totalSeconds > 0) {
+    if (isRunning) {
       intervalRef.current = setInterval(() => {
         setTotalSeconds((prev) => {
           if (prev <= 1) {
@@ -292,9 +294,11 @@ function Timer({ label, minutes }) {
           return prev - 1;
         });
       }, 1000);
+    } else {
+      clearInterval(intervalRef.current);
     }
     return () => clearInterval(intervalRef.current);
-  }, [isRunning, totalSeconds]);
+  }, [isRunning]);
 
   const reset = () => {
     clearInterval(intervalRef.current);
@@ -886,7 +890,6 @@ export default function CookingApp() {
       }}
     >
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&display=swap');
         @keyframes pulse {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.85; }
